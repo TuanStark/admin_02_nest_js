@@ -3,12 +3,13 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './passport/local-auth.guard';
 import { Public } from '@/decorator/customize';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    
+    private readonly mailerService: MailerService
   ) {}
 
   @Post("login")
@@ -28,6 +29,22 @@ export class AuthController {
   @Public()
   handleRegister(@Body() registerDto: CreateAuthDto) {
     return this.authService.register(registerDto);
+  }
+
+
+  @Get('mail')
+  @Public()
+  testmail() {
+    this.mailerService
+      .sendMail({
+        to: 'lecongtuan472004@gmail.com', // list of receivers
+        subject: 'Testing Nest MailerModule ✔', // Subject line
+        text: 'welcome', // plaintext body
+        html: '<b>Hello World Tuan Stark</b>', // HTML body content
+      })
+      .then(() => {})
+      .catch(() => {});
+    return "OK";
   }
 
 }
