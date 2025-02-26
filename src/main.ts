@@ -1,3 +1,4 @@
+declare const module: any;
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
@@ -13,5 +14,10 @@ async function bootstrap() {
   }));
   app.setGlobalPrefix('api/v1', { exclude: [''] });
   await app.listen(port ?? 8080);
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 bootstrap();

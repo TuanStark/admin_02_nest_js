@@ -11,14 +11,22 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async signIn(email: string, pass: string): Promise<any> {
+
+  async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
-    if (!user || !user.password || ! await comparePasswordhelper(pass, user.password)) {
+    if (!user || !user.password || !await comparePasswordhelper(password, user.password)) {
       throw new UnauthorizedException('Username or password is incorrect');
     }
+
+    if(!user) return null;
+    return user;
+  }
+
+  async login(user: any) {
     const payload = { sub: user._id, username: user.email };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
+
 }
