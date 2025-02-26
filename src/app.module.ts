@@ -3,7 +3,6 @@ import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
 import { UsersModule } from '@/modules/users/users.module';
 import { LikesModule } from '@/modules/likes/likes.module';
-
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MenuItemOptionsModule } from '@/modules/menu.item.options/menu.item.options.module';
@@ -14,6 +13,8 @@ import { OrdersModule } from '@/modules/orders/orders.module';
 import { RestaurantsModule } from '@/modules/restaurants/restaurants.module';
 import { ReviewsModule } from '@/modules/reviews/reviews.module';
 import { AuthModule } from '@/auth/auth.module';
+import { JwtAuthGuard } from '@/auth/passport/jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -37,6 +38,11 @@ import { AuthModule } from '@/auth/auth.module';
     AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },// cau hinh de dung JwtAuthGuard cho tat ca controller
+  ],
 })
 export class AppModule { }
