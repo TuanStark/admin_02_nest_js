@@ -2,7 +2,8 @@ import { Controller,Request, Get, Post, Body, Patch, Param, Delete, UseGuards } 
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './passport/local-auth.guard';
 import { Public } from '@/decorator/customize';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateAuthDto, CodeAuthDto } from './dto/create-auth.dto';
+import { ResponseMessage } from '@/decorator/customize';
 
 @Controller('auth')
 export class AuthController {
@@ -11,6 +12,7 @@ export class AuthController {
   ) {}
 
   @Post("login")
+  @ResponseMessage('Login success')
   @Public()// khong check logic lien quan den jwt
   @UseGuards(LocalAuthGuard)// cai nay khong lien quan den jwt
   handleLogin(@Request() req) {
@@ -28,6 +30,13 @@ export class AuthController {
   handleRegister(@Body() registerDto: CreateAuthDto) {
     return this.authService.register(registerDto);
   }
+
+  @Post('check-code')
+  @Public()
+  handleCheckCode(@Body() registerDto: CodeAuthDto) {
+    return this.authService.checkCode(registerDto);
+  }
+
 
 
   // @Get('mail')
